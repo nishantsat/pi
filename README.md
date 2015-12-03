@@ -1,2 +1,2 @@
 # pi
-A GUI-based Mathematical Engine
+A multi-platform GUI-based mathematical engine. 
