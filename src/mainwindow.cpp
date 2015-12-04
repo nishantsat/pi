@@ -20,9 +20,16 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->txtOutput->setTextColor(QColor("white"));
     ui->txtOutput->setText("[Ready]");
 
+    QSizePolicy policyA;
+    policyA.setHorizontalStretch(1);
+    QSizePolicy policyB;
+    policyB.setHorizontalStretch(4);
     QSplitter* splitterB = new QSplitter();
+    ui->tvNavBar->setSizePolicy(policyA);
+    splitterA->setSizePolicy(policyB);
     splitterB->addWidget(ui->tvNavBar);
     splitterB->addWidget(splitterA);
+    ui->tvNavBar->resize(50, ui->tvNavBar->height());
 
     QHBoxLayout *layout = new QHBoxLayout;
     layout->addWidget(splitterB);
