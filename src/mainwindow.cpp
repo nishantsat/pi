@@ -5,6 +5,7 @@
 #include <QHBoxLayout>
 #include <QDesktopWidget>
 #include <QRect>
+#include <QFileSystemModel>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -31,7 +32,6 @@ MainWindow::MainWindow(QWidget *parent) :
     splitterA->setSizePolicy(policyB);
     splitterB->addWidget(ui->tvNavBar);
     splitterB->addWidget(splitterA);
-    ui->tvNavBar->resize(50, ui->tvNavBar->height());
 
     QHBoxLayout *layout = new QHBoxLayout;
     layout->addWidget(splitterB);
@@ -42,6 +42,14 @@ MainWindow::MainWindow(QWidget *parent) :
     QWidget *window = new QWidget();
     window->setLayout(layout);
     setCentralWidget(window);
+
+    QFileSystemModel *model = new QFileSystemModel;
+    model->setRootPath(QDir::homePath());
+    ui->tvNavBar->setModel(model);
+    ui->tvNavBar->setRootIndex(model->index(QDir::homePath()));
+    ui->tvNavBar->hideColumn(1);
+    ui->tvNavBar->hideColumn(2);
+    ui->tvNavBar->hideColumn(3);
 }
 
 MainWindow::~MainWindow()
