@@ -3,6 +3,8 @@
 #include <QSplitter>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QDesktopWidget>
+#include <QRect>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -33,6 +35,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QHBoxLayout *layout = new QHBoxLayout;
     layout->addWidget(splitterB);
+
+    QRect rect = qApp->desktop()->availableGeometry();
+    setGeometry(rect.width() / 10, rect.height() / 5, rect.width() / 1.5, rect.height() / 1.5);
 
     QWidget *window = new QWidget();
     window->setLayout(layout);
