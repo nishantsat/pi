@@ -6,6 +6,12 @@
 #include <QDesktopWidget>
 #include <QRect>
 #include <QFileSystemModel>
+#include <QDirModel>
+#include <QFileDialog>
+#include <QDebug>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QJsonArray>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -43,16 +49,53 @@ MainWindow::MainWindow(QWidget *parent) :
     window->setLayout(layout);
     setCentralWidget(window);
 
-    QFileSystemModel *model = new QFileSystemModel;
-    model->setRootPath(QDir::homePath());
+    ui->txtInput->setEnabled(false);
+
+    // setup navbar
+    QDirModel *model = new QDirModel;
     ui->tvNavBar->setModel(model);
     ui->tvNavBar->setRootIndex(model->index(QDir::homePath()));
     ui->tvNavBar->hideColumn(1);
     ui->tvNavBar->hideColumn(2);
     ui->tvNavBar->hideColumn(3);
+    ui->tvNavBar->header()->hide();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::on_actionNew_triggered()
+{
+}
+
+void MainWindow::on_actionOpen_triggered()
+{
+    QString fileName = QFileDialog::getOpenFileName(this,
+        tr("Open pi Project"), QDir::homePath(), tr("Image Files (*.pproj)"));
+    readJson(fileName);
+}
+
+void MainWindow::readJson(QString val)
+{
+    /* Sample project file (which is in JSON format)
+        {
+           "files": {
+               "sources":["a.pi","b.pi"]
+           }
+        }
+    */
+    QFile file(val);
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+    val = file.readAll();
+    file.close();
+    QJsonDocument d = QJsonDocument::fromJson(val.toUtf8());
+    QJsonObject sett2 = d.object();
+    QJsonValue value = sett2.value(QString("files"));
+    QJsonObject item = value.toObject();
+
+    QJsonArray files = item["sources"].toArray();
+    foreach (const QJsonValue& v, files)
+        qDebug() << v.toString();
 }

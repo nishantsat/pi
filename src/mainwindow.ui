@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>634</width>
-    <height>467</height>
+    <width>800</width>
+    <height>700</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,8 +23,22 @@
       <height>387</height>
      </rect>
     </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="font">
+     <font>
+      <family>PT Mono</family>
+     </font>
+    </property>
    </widget>
    <widget class="QTextEdit" name="txtOutput">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>219</x>
@@ -32,6 +46,11 @@
       <width>196</width>
       <height>387</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>PT Mono</family>
+     </font>
     </property>
     <property name="readOnly">
      <bool>true</bool>
@@ -46,6 +65,11 @@
       <height>387</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>PT Mono</family>
+     </font>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -53,7 +77,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>634</width>
+     <width>800</width>
      <height>22</height>
     </rect>
    </property>
@@ -69,6 +93,8 @@
     </property>
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
+    <addaction name="separator"/>
+    <addaction name="actionClose_Current_Project"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
@@ -89,12 +115,17 @@
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionNew">
    <property name="text">
-    <string>New</string>
+    <string>New Project...</string>
    </property>
   </action>
   <action name="actionOpen">
    <property name="text">
-    <string>Open</string>
+    <string>Open Project...</string>
+   </property>
+  </action>
+  <action name="actionClose_Current_Project">
+   <property name="text">
+    <string>Close Current Project</string>
    </property>
   </action>
  </widget>
