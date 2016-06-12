@@ -1,16 +1,15 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QDebug>
 #include <QSplitter>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QDesktopWidget>
 #include <QRect>
 #include <QFileDialog>
-#include <QDebug>
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QJsonArray>
-#include <QStringListModel>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -105,10 +104,4 @@ void MainWindow::readJson(QString filename)
         item->setText(0, v.toString());
     }
     ui->twNavBar->expandAll();
-    /*
-    // setup navbar
-    QStringListModel *model = new QStringListModel();
-    model->setStringList(list);
-    ui->tvNavBar->setModel(model);
-    */
 }
