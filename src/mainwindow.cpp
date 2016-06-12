@@ -2,7 +2,6 @@
 #include "ui_mainwindow.h"
 #include <QDebug>
 #include <QSplitter>
-#include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QDesktopWidget>
 #include <QRect>
@@ -20,22 +19,21 @@ MainWindow::MainWindow(QWidget *parent) :
     // Add the input and output screens
     QSplitter* splitterA = new QSplitter();
     splitterA->setOrientation(Qt::Vertical);
-    splitterA->addWidget(ui->txtInput);
+    splitterA->addWidget(ui->tabWx);
     splitterA->addWidget(ui->txtOutput);
     ui->txtOutput->setStyleSheet("QTextEdit {background-color: black;}");
     ui->txtOutput->setTextColor(QColor("white"));
     ui->txtOutput->setText("[Ready]");
     ui->twNavBar->setHeaderLabel("");
 
-    QSizePolicy policyA;
-    policyA.setHorizontalStretch(1);
-    QSizePolicy policyB;
-    policyB.setHorizontalStretch(4);
     QSplitter* splitterB = new QSplitter();
-    ui->twNavBar->setSizePolicy(policyA);
-    splitterA->setSizePolicy(policyB);
     splitterB->addWidget(ui->twNavBar);
     splitterB->addWidget(splitterA);
+
+    splitterA->setStretchFactor(0, 10);
+    splitterA->setStretchFactor(1, 1);
+    splitterB->setStretchFactor(0, 1);
+    splitterB->setStretchFactor(1, 3);
 
     QHBoxLayout *layout = new QHBoxLayout;
     layout->addWidget(splitterB);
@@ -46,8 +44,6 @@ MainWindow::MainWindow(QWidget *parent) :
     QWidget *window = new QWidget();
     window->setLayout(layout);
     setCentralWidget(window);
-
-    ui->txtInput->setEnabled(false);
 }
 
 MainWindow::~MainWindow()
