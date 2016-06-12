@@ -5,20 +5,18 @@
 #include <QHBoxLayout>
 #include <QDesktopWidget>
 #include <QRect>
-#include <QFileSystemModel>
-#include <QDirModel>
 #include <QFileDialog>
 #include <QDebug>
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QJsonArray>
+#include <QStringListModel>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    ui->mainToolBar->addAction("Run");
 
     // Add the input and output screens
     QSplitter* splitterA = new QSplitter();
@@ -28,15 +26,16 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->txtOutput->setStyleSheet("QTextEdit {background-color: black;}");
     ui->txtOutput->setTextColor(QColor("white"));
     ui->txtOutput->setText("[Ready]");
+    ui->twNavBar->setHeaderLabel("");
 
     QSizePolicy policyA;
     policyA.setHorizontalStretch(1);
     QSizePolicy policyB;
     policyB.setHorizontalStretch(4);
     QSplitter* splitterB = new QSplitter();
-    ui->tvNavBar->setSizePolicy(policyA);
+    ui->twNavBar->setSizePolicy(policyA);
     splitterA->setSizePolicy(policyB);
-    splitterB->addWidget(ui->tvNavBar);
+    splitterB->addWidget(ui->twNavBar);
     splitterB->addWidget(splitterA);
 
     QHBoxLayout *layout = new QHBoxLayout;
@@ -50,15 +49,6 @@ MainWindow::MainWindow(QWidget *parent) :
     setCentralWidget(window);
 
     ui->txtInput->setEnabled(false);
-
-    // setup navbar
-    QDirModel *model = new QDirModel;
-    ui->tvNavBar->setModel(model);
-    ui->tvNavBar->setRootIndex(model->index(QDir::homePath()));
-    ui->tvNavBar->hideColumn(1);
-    ui->tvNavBar->hideColumn(2);
-    ui->tvNavBar->hideColumn(3);
-    ui->tvNavBar->header()->hide();
 }
 
 MainWindow::~MainWindow()
@@ -72,12 +62,13 @@ void MainWindow::on_actionNew_triggered()
 
 void MainWindow::on_actionOpen_triggered()
 {
+    qDebug() << "In";
     QString fileName = QFileDialog::getOpenFileName(this,
-        tr("Open pi Project"), QDir::homePath(), tr("Image Files (*.pproj)"));
+        tr("Open pi Project"), QDir::homePath() + "/stuff/pi", tr("Pi Project Files (*.piproj)"));
     readJson(fileName);
 }
 
-void MainWindow::readJson(QString val)
+void MainWindow::readJson(QString filename)
 {
     /* Sample project file (which is in JSON format)
         {
@@ -86,16 +77,38 @@ void MainWindow::readJson(QString val)
            }
         }
     */
-    QFile file(val);
+
+    QFile file(filename);
     file.open(QIODevice::ReadOnly | QIODevice::Text);
-    val = file.readAll();
+    QString val = file.readAll();
     file.close();
     QJsonDocument d = QJsonDocument::fromJson(val.toUtf8());
     QJsonObject sett2 = d.object();
     QJsonValue value = sett2.value(QString("files"));
     QJsonObject item = value.toObject();
 
+    // Extract project name
+    QString projectName = filename;
+    projectName.chop(7); // because .piproj is 7 letters
+    QStringList parts = projectName.split('/');
+    projectName = parts[parts.length() - 1];
+    //ui->twNavBar->setHeaderLabel(projectName);
+
+    QTreeWidgetItem *proj = new QTreeWidgetItem(ui->twNavBar);
+    proj->setText(0, projectName);
+
     QJsonArray files = item["sources"].toArray();
-    foreach (const QJsonValue& v, files)
-        qDebug() << v.toString();
+    QStringList list;
+    foreach (const QJsonValue& v, files) {
+        list << v.toString();
+        QTreeWidgetItem* item = new QTreeWidgetItem(proj);
+        item->setText(0, v.toString());
+    }
+    ui->twNavBar->expandAll();
+    /*
+    // setup navbar
+    QStringListModel *model = new QStringListModel();
+    model->setStringList(list);
+    ui->tvNavBar->setModel(model);
+    */
 }

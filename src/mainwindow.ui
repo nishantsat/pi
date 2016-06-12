@@ -14,35 +14,14 @@
    <string>pi</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QTreeView" name="tvNavBar">
-    <property name="geometry">
-     <rect>
-      <x>12</x>
-      <y>12</y>
-      <width>197</width>
-      <height>387</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="font">
-     <font>
-      <family>PT Mono</family>
-     </font>
-    </property>
-   </widget>
    <widget class="QTextEdit" name="txtOutput">
     <property name="enabled">
      <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
-      <x>219</x>
-      <y>12</y>
+      <x>290</x>
+      <y>60</y>
       <width>196</width>
       <height>387</height>
      </rect>
@@ -70,6 +49,21 @@
       <family>PT Mono</family>
      </font>
     </property>
+   </widget>
+   <widget class="QTreeWidget" name="twNavBar">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>11</y>
+      <width>191</width>
+      <height>391</height>
+     </rect>
+    </property>
+    <column>
+     <property name="text">
+      <string notr="true">1</string>
+     </property>
+    </column>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
