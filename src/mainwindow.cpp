@@ -15,35 +15,32 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
-    // Add the input and output screens
-    QSplitter* splitterA = new QSplitter();
-    splitterA->setOrientation(Qt::Vertical);
-    splitterA->addWidget(ui->tabWx);
-    splitterA->addWidget(ui->txtOutput);
     ui->txtOutput->setStyleSheet("QTextEdit {background-color: black;}");
     ui->txtOutput->setTextColor(QColor("white"));
     ui->txtOutput->setText("[Ready]");
     ui->twNavBar->setHeaderLabel("");
 
-    QSplitter* splitterB = new QSplitter();
-    splitterB->addWidget(ui->twNavBar);
-    splitterB->addWidget(splitterA);
+    QSplitter* sb = new QSplitter(Qt::Vertical);
+    sb->addWidget(ui->tabWx);
+    sb->addWidget(ui->txtOutput);
 
-    splitterA->setStretchFactor(0, 10);
-    splitterA->setStretchFactor(1, 1);
-    splitterB->setStretchFactor(0, 1);
-    splitterB->setStretchFactor(1, 3);
+    QSplitter* sa = new QSplitter(Qt::Horizontal);
+    sa->addWidget(ui->twNavBar);
+    sa->addWidget(sb);
 
-    QHBoxLayout *layout = new QHBoxLayout;
-    layout->addWidget(splitterB);
+    sb->setStretchFactor(0, 10);
+    sb->setStretchFactor(1, 1);
+    sa->setStretchFactor(0, 1);
+    sa->setStretchFactor(1, 3);
+
+    QHBoxLayout* layout = new QHBoxLayout();
+    layout->addWidget(sa);
+    QWidget* widget = new QWidget();
+    widget->setLayout(layout);
+    setCentralWidget(widget);
 
     QRect rect = qApp->desktop()->availableGeometry();
     setGeometry(rect.width() / 10, rect.height() / 5, rect.width() / 1.5, rect.height() / 1.5);
-
-    QWidget *window = new QWidget();
-    window->setLayout(layout);
-    setCentralWidget(window);
 }
 
 MainWindow::~MainWindow()
