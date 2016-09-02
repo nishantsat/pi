@@ -21,7 +21,7 @@ private slots:
     void on_actionOpen_triggered();
 
 private:
-    void readJson(QString val);
+    void readProjectFile(QString val);
     Ui::MainWindow *ui;
 };
 

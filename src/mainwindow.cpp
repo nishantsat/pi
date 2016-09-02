@@ -57,18 +57,15 @@ void MainWindow::on_actionOpen_triggered()
     qDebug() << "In";
     QString fileName = QFileDialog::getOpenFileName(this,
         tr("Open pi Project"), QDir::homePath() + "/stuff/pi", tr("Pi Project Files (*.piproj)"));
-    readJson(fileName);
+    readProjectFile(fileName);
 }
 
-void MainWindow::readJson(QString filename)
+void MainWindow::readProjectFile(QString filename)
 {
-    /* Sample project file (which is in JSON format)
-        {
-           "files": {
-               "sources":["a.pi","b.pi"]
-           }
-        }
-    */
+    // Sample project file (JSON format)
+    // {
+    //     "files":"a.pi,b.pi"
+    // }
 
     QFile file(filename);
     file.open(QIODevice::ReadOnly | QIODevice::Text);
