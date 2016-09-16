@@ -64,29 +64,26 @@ void MainWindow::readProjectFile(QString filename)
 {
     // Sample project file (JSON format)
     // {
-    //     "files":"a.pi,b.pi"
+    //     "files": ["a.pi", "b.pi"]
     // }
 
     QFile file(filename);
     file.open(QIODevice::ReadOnly | QIODevice::Text);
     QString val = file.readAll();
     file.close();
-    QJsonDocument d = QJsonDocument::fromJson(val.toUtf8());
-    QJsonObject sett2 = d.object();
-    QJsonValue value = sett2.value(QString("files"));
-    QJsonObject item = value.toObject();
 
     // Extract project name
     QString projectName = filename;
     projectName.chop(7); // because .piproj is 7 letters
     QStringList parts = projectName.split('/');
     projectName = parts[parts.length() - 1];
-    //ui->twNavBar->setHeaderLabel(projectName);
 
+    QJsonDocument d = QJsonDocument::fromJson(val.toUtf8());
+    QJsonValue value = d.object().value(QString("files"));
     QTreeWidgetItem *proj = new QTreeWidgetItem(ui->twNavBar);
     proj->setText(0, projectName);
 
-    QJsonArray files = item["sources"].toArray();
+    QJsonArray files = value.toArray();
     QStringList list;
     foreach (const QJsonValue& v, files) {
         list << v.toString();
@@ -94,4 +91,27 @@ void MainWindow::readProjectFile(QString filename)
         item->setText(0, v.toString());
     }
     ui->twNavBar->expandAll();
+}
+
+void MainWindow::on_twNavBar_doubleClicked(const QModelIndex &index)
+{
+    QString s = index.data().toString();
+    auto itr = tabs.find(s.toStdString());
+    if (itr != tabs.end())
+        return;
+    QTextEdit* te = new QTextEdit();
+    ui->tabWx->addTab(te, s);
+    tabs[s.toStdString()] = te;
+}
+
+void MainWindow::on_tabWx_tabCloseRequested(int index)
+{
+    std::string title = ui->tabWx->tabText(index).toStdString();
+    ui->tabWx->removeTab(index);
+    auto itr = tabs.find(title);
+    if (itr != tabs.end()) {
+        if (itr->second != nullptr)
+            delete itr->second;
+        tabs.erase(tabs.find(title));
+    }
 }
