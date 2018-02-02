@@ -34,21 +34,21 @@ struct CalculatorParser : qi::grammar<Iterator, double(), qi::space_type>
     expression =
       term                         [_val = _1]
       >> *(('+' >> term            [_val += _1])
-              |('-' >> term        [_val -= _1])
-              );
+      |   ('-'  >> term            [_val -= _1])
+      );
 
     term =
-      factor                          [_val = _1]
-      >> *(   ('*' >> factor          [_val *= _1])
-              |   ('/' >> factor      [_val /= _1])
-              )
+      factor                       [_val = _1]
+      >> *(('*' >> factor          [_val *= _1])
+      |   ('/'  >> factor          [_val /= _1])
+      )
       ;
 
     factor =
-      qi::double_                     [_val = _1]
-      |   '(' >> expression           [_val = _1] >> ')'
-      |   ('-' >> factor              [_val = -_1])
-      |   ('+' >> factor              [_val = _1])
+      qi::double_                  [_val = _1]
+      |   '(' >> expression        [_val = _1] >> ')'
+      |   ('-' >> factor           [_val = -_1])
+      |   ('+' >> factor           [_val = _1])
       ;
   }
   qi::rule<Iterator, double(), qi::space_type> term;
