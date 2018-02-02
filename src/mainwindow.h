@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QTextEdit>
 #include <unordered_map>
+#include "parser.h"
 
 namespace Ui {
 class MainWindow;
@@ -17,6 +18,9 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+protected:
+    bool eventFilter(QObject *obj, QEvent *ev);
+
 private slots:
     void on_actionNew_triggered();
     void on_actionOpen_triggered();
@@ -29,6 +33,8 @@ private:
     void readProjectFile(QString val);
     Ui::MainWindow *ui;
     std::unordered_map<std::string, QTextEdit*> tabs;
+
+    CalculatorParser<std::string::iterator> parser;
 };
 
 #endif // MAINWINDOW_H

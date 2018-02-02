@@ -9,20 +9,34 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QJsonArray>
+#include <QList>
+#include <QKeyEvent>
+#include <QKeySequence>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    installEventFilter(this);
     ui->setupUi(this);
+    ui->txtInput->setStyleSheet("QTextEdit {background-color: white;}");
+    ui->txtInput->setTextColor(QColor("black"));
+    ui->txtInput->setText("");
+
     ui->txtOutput->setStyleSheet("QTextEdit {background-color: black;}");
     ui->txtOutput->setTextColor(QColor("white"));
-    ui->txtOutput->setText("[Ready]");
+    ui->txtOutput->setText("_");
+
     ui->twNavBar->setHeaderLabel("");
+
 
     QSplitter* sb = new QSplitter(Qt::Vertical);
     sb->addWidget(ui->tabWx);
+    ui->tabWx->addTab(ui->txtInput, "new *");
     sb->addWidget(ui->txtOutput);
+    QList<int> sz;
+    sz << 10 << 10;
+    sb->setSizes(sz);
 
     QSplitter* sa = new QSplitter(Qt::Horizontal);
     sa->addWidget(ui->twNavBar);
@@ -48,13 +62,37 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+bool MainWindow::eventFilter(QObject *obj, QEvent *event)
+{
+    (void)obj;
+    if (event->type() == QEvent::KeyPress) {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
+        if (keyEvent->key() == Qt::Key_F12) {
+            QString qs = ui->txtInput->toPlainText();
+            std::string input = qs.toUtf8().constData();
+            auto first = begin(input);
+            auto last = end(input);
+
+            auto val = 0.0;
+            auto isSuccess  = qi::phrase_parse(first, last,
+              parser, qi::space, val);
+
+            if (first != last || !isSuccess)
+              ui->txtOutput->setText("Error: Parse error. ");
+            else
+              ui->txtOutput->setText(QString::number(val));
+            return true;
+        }
+    }
+    return false;
+}
+
 void MainWindow::on_actionNew_triggered()
 {
 }
 
 void MainWindow::on_actionOpen_triggered()
 {
-    qDebug() << "In";
     QString fileName = QFileDialog::getOpenFileName(this,
         tr("Open pi Project"), QDir::homePath() + "/stuff/pi", tr("Pi Project Files (*.piproj)"));
     readProjectFile(fileName);
